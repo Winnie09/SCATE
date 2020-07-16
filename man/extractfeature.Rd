@@ -30,5 +30,5 @@ extractfeature(SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=
 }
 }
 \author{
-Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji <zji4@zji4.edu>
+Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@jhu.edu>
 }

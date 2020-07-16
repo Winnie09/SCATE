@@ -26,5 +26,5 @@ This function filters out scATAC-seq with low library size and transforms the re
 satacprocess(list(cell1=GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),cell2=GRanges(seqnames="chr2",IRanges(start=1:100+1e6,end=1:100+1e6))),type='gr',libsizefilter=10)
 }
 \author{
-Zhicheng Ji, Weiqiang Zhou, Hongkai Ji <zji4@zji4.edu>
+Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@jhu.edu>
 }

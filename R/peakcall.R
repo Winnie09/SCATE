@@ -8,8 +8,8 @@
 #' @param fdrcut Numeric variable of FDR cutoff. Bins passing the FDR cutoff will be peaks.
 #' @return A list with length equal to the number of clusters. Each element is a data frame with five columns: chromosome name, starting location, ending location, FDR and signal. The data frame is ordered by FDR then by signal.
 #' @export
-#' @import GenomicRanges
-#' @author Zhicheng Ji, Weiqiang Zhou, Hongkai Ji <zji4@@zji4.edu>
+#' @import GenomicAlignments
+#' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
 #' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=5000,genome='mm10'))
 
@@ -22,13 +22,13 @@ peakcall <- function(res,flank=1,fdrcut=1e-5) {
       end(flankgr) <- end(flankgr) + 200 * flank
       flankgrover <- as.matrix(findOverlaps(gr,flankgr))
       
-      peakres <- lapply(1:ncol(res),function(i) {
+      peakres <- lapply(seq(1, ncol(res)),function(i) {
             feature <- res[,i]
             sumv <- rowsum(feature[flankgrover[,1]],flankgrover[,2])[,1]
             sumv <- sumv/rowsum(rep(1,nrow(flankgrover)),flankgrover[,2])[,1]
             
             sampfeature <- sample(feature)
-            backv <- sapply(0:100000,function(i) mean(sampfeature[(1+i*(2*flank+1)):((i+1)*(2*flank+1))]))
+            backv <- sapply(seq(0,100000),function(i) mean(sampfeature[(1+i*(2*flank+1)):((i+1)*(2*flank+1))]))
             xseq <- seq(floor(min(sumv)),ceiling(max(sumv)),0.1)
             fdr <- sapply(xseq,function(cut) {
                   mean(backv >= cut)/mean(sumv >= cut)

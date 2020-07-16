@@ -9,19 +9,17 @@
 #' @param cre dataframe of new CRE sites to be added to the database. First column: chromosome name. Second column: start position. Third column: end position.
 #' @param genome Character variable of either "hg19" or "mm10". Default is 'hg19'. Ignored when datapath is NULL.
 #' @param genomerange Data frame with two columns. First column is the chromosome and second column is the length of the genome. Only useful when datapath is NULL. Example is https://genome.ucsc.edu/goldenpath/help/hg19.chrom.sizes
+#' @return a new customized database if users have new bulk DNase-seq data and such information can be contribued to the model building of SCATE.
 #' @export
 #' @import GenomicAlignments
-#' @author Zhicheng Ji, Weiqiang Zhou, Hongkai Ji <zji4@@zji4.edu>
+#' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 
 makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',genomerange=NULL) {
-      
-      
-      if (is.null(datapath)) {
-            
+   if (is.null(datapath)) {
             chrlen <- genomerange
             allres <- NULL
             #sort chromosome
-            for (i in 1:nrow(chrlen)) {
+            for (i in seq(1, nrow(chrlen))) {
                   #keep all chromosome
                   start <- 200 * (0:floor((chrlen[i,2])/200))
                   end <- start + 199
@@ -29,7 +27,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
             }
             gr <- GRanges(seqnames=allres$chr,IRanges(start=allres$start,end=allres$end))
             over <- as.matrix(findOverlaps(gr,blacklist))[,1]
-            gr <- gr[setdiff(1:length(gr),over),]
+            gr <- gr[setdiff(seq(1, length(gr)),over),]
 
             if (!is.null(cre)) {
                   cre <- GRanges(seqnames=cre[,1],IRanges(start=cre[,2],end=cre[,3]))
@@ -65,7 +63,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
             
             pos <- cbind(start,end)
             
-            newid <- lapply(1:ncol(count),function(i) {  
+            newid <- lapply(seq(1, ncol(count)),function(i) {  
                   id <- which(count[,i] >= 10 & norm[,i] >= 5)
                   backnorm <- sapply(id,function(j) mean(norm[pos[j,1]:pos[j,2],i]))
                   id[which(norm[id,i]/backnorm >= 5)]	
@@ -73,7 +71,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
             
             id <- unique(c(unlist(newid),creid))
       } else {
-            packdata <- readRDS(paste0(system.file(package="SCATE"),"/extdata/",genome,".rds"))
+            packdata <- readRDS(paste0(system.file(package="SCATEData"),"/extdata/",genome,".rds"))
             gr <- packdata$gr
             
             if (!is.null(cre)) {
@@ -100,7 +98,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
             norm <- log2(t(t(count)/len)+1)
             
             pos <- readRDS(paste0(datapath,"/backgrpos.rds"))
-            newid <- lapply(1:ncol(count),function(i) {  
+            newid <- lapply(seq(1, ncol(count)),function(i) {  
                   id <- which(count[,i] >= 10 & norm[,i] >= 5)
                   backnorm <- sapply(id,function(j) mean(norm[pos[j,1]:pos[j,2],i]))
                   id[which(norm[id,i]/backnorm >= 5)]	
@@ -119,7 +117,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
       
       zid <- which(rowSums(norm) == 0)
       id <- setdiff(id,zid)
-      excid <- setdiff(1:length(gr),c(id,zid))
+      excid <- setdiff(seq(1,length(gr)),c(id,zid))
       
       orisum <- sum1 <- sum2 <- sum3 <- rep(0,length(gr))
       for (f in colnames(count)) {
@@ -153,7 +151,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
       
       oriclu <- kmeans(data,5000)$cluster
       
-      splitclu <- lapply(1:max(oriclu),function(cid) {
+      splitclu <- lapply(seq(1,max(oriclu)),function(cid) {
             distmat <- dist(norm[oriclu==cid,])
             hclust(distmat)
       })
@@ -162,20 +160,20 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
       clulist[['5000']] <- oriclu
       
       options(scipen=999)
-      spclu <- split(1:length(oriclu),oriclu)
+      spclu <- split(seq(1,length(oriclu)),oriclu)
       names(spclu) <- NULL
       
       for (split in c(2, 4, 8, 16, 32, 64)) {
             cluster <- oriclu
             curclu <- 1
-            for (i in 1:max(oriclu)) {
+            for (i in seq(1, max(oriclu))) {
                   if (sum(oriclu==i) == 1) {
                         cluster[oriclu==i] <- curclu
                         curclu <- curclu + 1
                   } else {
                         tmpclunum <- min(sum(oriclu==i),split)
                         tmpcluster <- cutree(splitclu[[i]],tmpclunum)
-                        for (j in 1:tmpclunum) {
+                        for (j in seq(1, tmpclunum)) {
                               cluster[spclu[[i]][tmpcluster==j]] <- curclu
                               curclu <- curclu + 1
                         }
@@ -186,8 +184,8 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
       
       options(scipen=999)
       clucenter <- matrix(0,nrow=max(oriclu),ncol=ncol(norm))
-      for (i in 1:max(oriclu)) {
-            clucenter[i,] <- colMeans(norm[which(oriclu==i),,drop=F])
+      for (i in seq(1,max(oriclu))) {
+            clucenter[i,] <- colMeans(norm[which(oriclu==i),,drop=FALSE])
       }
       
       hclu <- hclust(dist(scalematrix(clucenter)))
@@ -196,7 +194,7 @@ makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',g
             clunum <- round(max(oriclu) / clufac)
             clu <- cutree(hclu,k = clunum)
             cluster <- rep(0,length(oriclu))
-            for (i in 1:max(oriclu)) {
+            for (i in seq(1,max(oriclu))) {
                   cluster[which(oriclu==i)] <- clu[i]
             }
             clulist[[as.character(clunum)]] <- cluster

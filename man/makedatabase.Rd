@@ -26,6 +26,9 @@ makedatabase(
 
 \item{genomerange}{Data frame with two columns. First column is the chromosome and second column is the length of the genome. Only useful when datapath is NULL. Example is https://genome.ucsc.edu/goldenpath/help/hg19.chrom.sizes}
 }
+\value{
+a new customized database if users have new bulk DNase-seq data and such information can be contribued to the model building of SCATE.
+}
 \description{
 Make customized database with new bulk DNase-seq data
 }
@@ -33,5 +36,5 @@ Make customized database with new bulk DNase-seq data
 This function makes a new customized database if users have new bulk DNase-seq data and such information can be contribued to the model building of SCATE.
 }
 \author{
-Zhicheng Ji, Weiqiang Zhou, Hongkai Ji <zji4@zji4.edu>
+Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@jhu.edu>
 }

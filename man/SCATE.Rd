@@ -56,5 +56,5 @@ SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1
 }
 }
 \author{
-Zhicheng Ji, Weiqiang Zhou, Hongkai Ji <zji4@zji4.edu>
+Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@jhu.edu>
 }

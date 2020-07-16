@@ -10,7 +10,7 @@
 #' @return A subset of the input matrix
 #' @export
 #' @import GenomicAlignments parallel splines2 xgboost
-#' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji <zji4@@zji4.edu>
+#' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
 #' \dontrun{
 #' extractfeature(SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10",ncores=10),data.frame(seqnames='chr1',start=1e6,end=1000+1e6))
