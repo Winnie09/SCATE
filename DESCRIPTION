@@ -1,5 +1,5 @@
 Package: SCATE
-Version: 0.99.4
+Version: 0.99.5
 Title: SCATE: Single-cell ATAC-seq Signal Extraction and Enhancement
 Description: SCATE is a software tool for extracting and enhancing the sparse and discrete Single-cell ATAC-seq Signal. Single-cell sequencing assay for transposase-accessible chromatin (scATAC-seq) is the state-of-the-art technology for analyzing genome-wide regulatory landscapes in single cells. Single-cell ATAC-seq data are sparse and noisy, and analyzing such data is challenging. Existing computational methods cannot accurately reconstruct activities of individual cis-regulatory elements (CREs) in individual cells or rare cell subpopulations. SCATE was developed to adaptively integrate information from co-activated CREs, similar cells, and publicly available regulome data and substantially increase the accuracy for estimating activities of individual CREs. We demonstrate that SCATE can be used to better reconstruct the regulatory landscape of a heterogeneous sample.
 Authors@R: c(person("Zhicheng", "Ji", email = "zhichengji@gmail.com", role = "aut"), person("Weiqiang", "Zhou", email = "wzhou14@jhu.edu", role = "aut"), person("Wenpin", "Hou", email = "wp.hou3@gmail.com", role = c("cre","aut"), comment = c(ORCID = "0000-0003-0972-2192")), person("Hongkai", "Ji", email = "hji@jhu.edu", role = "aut"))
