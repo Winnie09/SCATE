@@ -13,10 +13,10 @@ biocViews: ExperimentHub,
 	   SequencingData, 
 	   SingleCellData, 
 	   SNPData
-Depends: GenomicAlignments,
-         parallel, preprocessCore, splines, splines2, xgboost,
+Depends: parallel, preprocessCore, splines, splines2, xgboost,
          SCATEData, Rtsne, mclust 
-Imports: utils
+Imports: utils,
+	 GenomicAlignments
 Suggests: rmarkdown,
 	  ggplot2,
 	  knitr

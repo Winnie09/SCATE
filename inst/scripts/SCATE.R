@@ -43,7 +43,7 @@ ggplot(plotdata,aes(x=tSNE1,y=tSNE2,col=Cluster)) +
   geom_point()
 
 ## -----------------------------------------------------------------------------
-res <- SCATE(satac,genome="hg19",cluster=cluster,clusterid=NULL,clunum=5000,ncores=10,verbose=TRUE)
+res <- SCATE(satac,genome="hg19",cluster=cluster,clusterid=NULL,clunum=5000,ncores=1,verbose=TRUE)
 # check the 10000-10005th row of the matrix
 res[seq(10000, 10005),]
 
@@ -55,7 +55,7 @@ names(usercellcluster) <- names(satac)
 usercellcluster
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  userclusterres <- SCATE(satac,genome="hg19",cluster=usercellcluster,clunum=5000,ncores=10,verbose=TRUE)
+#  userclusterres <- SCATE(satac,genome="hg19",cluster=usercellcluster,clunum=5000,ncores=1,verbose=TRUE)
 
 ## -----------------------------------------------------------------------------
 region <- data.frame(chr=c('chr5','chr5'),start=c(50000,50700),end=c(50300,51000))
@@ -77,7 +77,7 @@ head(peakres[[1]])
 #  write.table(peakres[[1]],file='your file.bed',sep='\t',quote=FALSE,col.names = FALSE,row.names = FALSE)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  piperes <- SCATEpipeline(bamlist,genome="hg19",cellclunum=2,CREclunum=5000,perplexity=5,ncores=10)
+#  piperes <- SCATEpipeline(bamlist,genome="hg19",cellclunum=2,CREclunum=5000,perplexity=5,ncores=1)
 #  # get the cell cluster results, same as calling 'cellcluster' function.
 #  cluster <- piperes[['cellcluster']]
 #  # get the SCATE outputs, same as calling 'SCATE' function.

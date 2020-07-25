@@ -22,7 +22,7 @@
 #' cellcluster(celldata,type='reads',genome="hg19",filtervar=FALSE,perplexity=1,clunum=3) # reads as input
 
 cellcluster <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',clunum=NULL,perplexity=30,filtervar=TRUE,datapath=NULL) {
-   if (!is.null(datapath)) {
+    if (!is.null(datapath)) {
             loaddata <- readRDS(datapath)
     } else {
             loaddata <- readRDS(paste0(system.file(package="SCATEData"),"/extdata/",genome,".rds"))
@@ -66,13 +66,13 @@ cellcluster <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg
    }
    prres <- prcomp(t(clusteraggregate),scale. = TRUE)$x
    
-   tsne <- Rtsne(prres[,seq(1,min(50,ncol(prres)))],pca=F,perplexity=perplexity)$Y
+   tsne <- Rtsne(prres[,seq(1,min(50,ncol(prres)))],pca=FALSE,perplexity=perplexity)$Y
    row.names(tsne) <- row.names(prres)
    
    if (is.null(clunum)) {
-         cluster <- Mclust(tsne,G=seq(1,20),prior = priorControl(),verbose=F)
+         cluster <- Mclust(tsne,G=seq(1,20),prior = priorControl(),verbose=FALSE)
    } else {
-         cluster <- Mclust(tsne,G=clunum,prior = priorControl(),verbose=F)
+         cluster <- Mclust(tsne,G=clunum,prior = priorControl(),verbose=FALSE)
    }
    cluster <- apply(cluster$z,1,which.max)
    names(cluster) <- row.names(tsne)

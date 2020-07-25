@@ -49,10 +49,10 @@ This function takes as input the scATAC-seq reads and generates enhanced signals
 }
 \examples{
 set.seed(12345)
-SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10",ncores=10) # Reads as input, setting CRE cluster number as 5000 to increase speed
+SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10",ncores=1) # Reads as input, setting CRE cluster number as 5000 to increase speed
 \dontrun{
-SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1),clunum=5000,type='peaks',genome="mm10",ncores=10) # Peak as input, peakOverlapMethod=full
-SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e6,count=1),clunum=5000,type='peaks',peakOverlapMethod='middle',genome="mm10",ncores=10) # Peak as input, peakOverlapMethod=middle
+SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1),clunum=5000,type='peaks',genome="mm10",ncores=1) # Peak as input, peakOverlapMethod=full
+SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e6,count=1),clunum=5000,type='peaks',peakOverlapMethod='middle',genome="mm10",ncores=1) # Peak as input, peakOverlapMethod=middle
 }
 }
 \author{

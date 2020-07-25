@@ -109,7 +109,7 @@ ggplot(plotdata,aes(x=tSNE1,y=tSNE2,col=Cluster)) + geom_point()
 
 The function `SCATE` will reconstruct signals for individual CREs. For example, below code performs SCATE using the scATAC-seq data and clustering results from the previous clustering step. For demonstration purpose, here number of CRE clusters is set to be 5000 (clunum=5000) to allow faster speed. In real application, clunum is recommended to set to NULL so SCATE will automatically choose the optimal number of clusters.
 ```{r eval=FALSE}      
-res <- SCATE(satac,genome="hg19",cluster=cluster,clusterid=NULL,clunum=5000,ncores=10,verbose=TRUE)
+res <- SCATE(satac,genome="hg19",cluster=cluster,clusterid=NULL,clunum=5000,ncores=1,verbose=TRUE)
 # check the 10000-10005th row of the matrix
 res[seq(10000,10005),]
 ```
@@ -127,7 +127,7 @@ names(usercellcluster) <- names(satac)
 usercellcluster
 ```
 ```{r eval=FALSE}    
-userclusterres <- SCATE(satac,genome="hg19",cluster=usercellcluster,clunum=5000,ncores=10,verbose=TRUE)
+userclusterres <- SCATE(satac,genome="hg19",cluster=usercellcluster,clunum=5000,ncores=1,verbose=TRUE)
 ```
 
 Function `extractfeature` can be used to extract signals for a subset of genomic region of interest. For example if we want to extract signal for all bins that are within chromosome 5 50000-50300 and 50700-51000, we can first prepare the following region data:
@@ -172,7 +172,7 @@ write.table(peakres[[1]],file='your file.bed',sep='\t',quote=F,col.names = FALSE
 
 The whole process of reading in bam, clustering cell, and performing SCATE is included in the `SCATEpipeline` function using following wrapper function of SCATE pipeline:
 ```{r eval=FALSE}    
-piperes <- SCATEpipeline(bamlist,genome="hg19",cellclunum=2,CREclunum=5000,perplexity=5,ncores=10)
+piperes <- SCATEpipeline(bamlist,genome="hg19",cellclunum=2,CREclunum=5000,perplexity=5,ncores=1)
 # get the cell cluster results, same as calling 'cellcluster' function.
 cluster <- piperes[['cellcluster']]
 # get the SCATE outputs, same as calling 'SCATE' function.
