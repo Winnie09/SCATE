@@ -16,8 +16,8 @@
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
 #' set.seed(12345)
-#' f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')
-#' SCATEpipeline(f,genome="hg19",CREclunum=5000,perplexity=5)
+#' f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')[1:3]
+#' SCATEpipeline(f,genome="hg19",CREclunum=5000,perplexity=0.1)
 
 SCATEpipeline <- function(bamfile,genome='hg19',cellclunum=NULL,CREclunum=NULL,datapath=NULL,ncores=1,perplexity=30) {
       satac <- sapply(sapply(bamfile,readGAlignmentPairs),GRanges)
