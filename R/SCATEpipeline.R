@@ -16,15 +16,22 @@
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
 #' set.seed(12345)
-#' f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')[1:3]
+#' f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')[1]
 #' SCATEpipeline(f,genome="hg19",CREclunum=156,perplexity=0.1) #  Users need to set CREclunum to be NULL in real applications.
 
 SCATEpipeline <- function(bamfile,genome='hg19',cellclunum=NULL,CREclunum=NULL,datapath=NULL,ncores=1,perplexity=30) {
-      satac <- sapply(sapply(bamfile,readGAlignmentPairs),GRanges)
-      suppressWarnings(satac <- satacprocess(satac,type='gr'))
+   satac <- sapply(sapply(bamfile,readGAlignmentPairs),GRanges)
+   suppressWarnings(satac <- satacprocess(satac,type='gr'))
+   if (length(bamfile) == 1) {
+      SCATEres <- SCATE(satac,genome=genome,clunum=CREclunum,datapath=datapath,ncores=ncores)
+      peakres <- peakcall(SCATEres)
+      list(SCATE=SCATEres,peak=peakres)
+   } else {
       cellclu <- cellcluster(satac,genome=genome,perplexity=perplexity,clunum=cellclunum,datapath=datapath)
       SCATEres <- SCATE(satac,genome=genome,cluster=cellclu$cluster,clunum=CREclunum,datapath=datapath,ncores=ncores)
       peakres <- peakcall(SCATEres)
       list(cellcluster=cellclu,SCATE=SCATEres,peak=peakres)
+   }
+   
 }
 

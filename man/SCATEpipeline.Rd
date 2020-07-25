@@ -40,7 +40,7 @@ This function takes as input a list of bam files. It then read in the bam files,
 }
 \examples{
 set.seed(12345)
-f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')[1:3]
+f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')[1]
 SCATEpipeline(f,genome="hg19",CREclunum=156,perplexity=0.1) #  Users need to set CREclunum to be NULL in real applications.
 }
 \author{
