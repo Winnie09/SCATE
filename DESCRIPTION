@@ -16,6 +16,7 @@ biocViews: ExperimentHub,
 Depends: parallel, preprocessCore, splines, splines2, xgboost,
          SCATEData, Rtsne, mclust 
 Imports: utils,
+         stats,
 	 GenomicAlignments
 Suggests: rmarkdown,
 	  ggplot2,

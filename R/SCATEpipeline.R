@@ -19,7 +19,7 @@
 #' f <- list.files(paste0(system.file(package="SCATEData"),"/extdata/"),full.names = TRUE,pattern='.bam$')
 #' SCATEpipeline(f,genome="hg19",CREclunum=5000,perplexity=5)
 
-SCATEpipeline <- function(bamfile,genome='hg19',cellclunum=NULL,CREclunum=NULL,datapath=NULL,ncores=detectCores(),perplexity=30) {
+SCATEpipeline <- function(bamfile,genome='hg19',cellclunum=NULL,CREclunum=NULL,datapath=NULL,ncores=1,perplexity=30) {
       satac <- sapply(sapply(bamfile,readGAlignmentPairs),GRanges)
       suppressWarnings(satac <- satacprocess(satac,type='gr'))
       cellclu <- cellcluster(satac,genome=genome,perplexity=perplexity,clunum=cellclunum,datapath=datapath)

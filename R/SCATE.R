@@ -19,13 +19,13 @@
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
 #' set.seed(12345)
-#' SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10",ncores=1) # Reads as input, setting CRE cluster number as 5000 to increase speed
+#' SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10") # Reads as input, setting CRE cluster number as 5000 to increase speed
 #' \dontrun{
-#' SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1),clunum=5000,type='peaks',genome="mm10",ncores=1) # Peak as input, peakOverlapMethod=full
-#' SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e6,count=1),clunum=5000,type='peaks',peakOverlapMethod='middle',genome="mm10",ncores=1) # Peak as input, peakOverlapMethod=middle
+#' SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1),clunum=5000,type='peaks',genome="mm10") # Peak as input, peakOverlapMethod=full
+#' SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e6,count=1),clunum=5000,type='peaks',peakOverlapMethod='middle',genome="mm10") # Peak as input, peakOverlapMethod=middle
 #' }
 
-SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cluster=NULL,clusterid=NULL,clunum=NULL,datapath=NULL,ncores=detectCores(),verbose=TRUE) {
+SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cluster=NULL,clusterid=NULL,clunum=NULL,datapath=NULL,verbose=TRUE,ncores = 1) {
       if (Sys.info()[['sysname']]=='Windows') {
             message('Parallel is disabled for Windows. Running with one core')
             ncores <- 1
@@ -36,7 +36,7 @@ SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cl
             loaddata <- readRDS(paste0(system.file(package="SCATEData"),"/extdata/",genome,".rds"))
       }
       gr <- loaddata$gr
-      SCATEsingle <- function(satac,genome='hg19',datapath=NULL,ncores=detectCores()) {
+      SCATEsingle <- function(satac,genome='hg19',datapath=NULL) {
             options(scipen=999)
             if (verbose) {
                   print('Preparing data')      
@@ -169,12 +169,22 @@ SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cl
                         cluster <- loaddata$cluster[,which(allclunum==clunum)]
                         spclu <- split(seq(1,length(cluster)),cluster)
                         names(spclu) <- NULL
-                        loglike <- unlist(mclapply(targetid,function(testid) {
-                              trainid <- setdiff(spclu[[cluster[testid]]],testid)
-                              delta <- deltafitfunc(count[trainid],m[trainid],s[trainid])
-                              logmu <- logmufunc(m[testid]+s[testid]*delta)
-                              count[testid]*logmu-exp(logmu)
-                        },mc.cores=ncores))
+                        if (ncores == 1){
+                           loglike <- unlist(lapply(targetid,function(testid) {
+                                 trainid <- setdiff(spclu[[cluster[testid]]],testid)
+                                 delta <- deltafitfunc(count[trainid],m[trainid],s[trainid])
+                                 logmu <- logmufunc(m[testid]+s[testid]*delta)
+                                 count[testid]*logmu-exp(logmu)
+                           }))
+                        } else {
+                           loglike <- unlist(mclapply(targetid,function(testid) {
+                                 trainid <- setdiff(spclu[[cluster[testid]]],testid)
+                                 delta <- deltafitfunc(count[trainid],m[trainid],s[trainid])
+                                 logmu <- logmufunc(m[testid]+s[testid]*delta)
+                                 count[testid]*logmu-exp(logmu)
+                           }, mc.cores = ncores))
+                        }
+                           
                   })
                   logclu <- log2(c(allclunum,length(id)))
                   medll <- apply(loglike,2,median)
@@ -182,16 +192,31 @@ SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cl
                   clunum <- c(allclunum, length(id))[which.max(predict(loessmod,logclu))]
             }
             if (clunum == length(id)) {
-                  crefeature <- unlist(mclapply(seq(1,length(id)),function(i) {
-                        m[i]+s[i]*deltafitfunc(count[i],m[i],s[i])
-                  },mc.cores=ncores))
+                  if (ncores == 1){
+                     crefeature <- unlist(lapply(seq(1,length(id)),function(i) {
+                           m[i]+s[i]*deltafitfunc(count[i],m[i],s[i])
+                     }))
+                  } else {
+                     crefeature <- unlist(mclapply(seq(1,length(id)),function(i) {
+                           m[i]+s[i]*deltafitfunc(count[i],m[i],s[i])
+                     }, mc.cores = ncores))
+                  }
+                     
             } else {
                   cluster <- loaddata$cluster[,which(allclunum==clunum)]
                   spclu <- split(seq(1,length(cluster)),cluster)
-                  delta <- unlist(mclapply(seq(1,clunum),function(cluid) {
-                        binid <- spclu[[cluid]]
-                        deltafitfunc(count[binid],m[binid],s[binid])
-                  },mc.cores=ncores))
+                  if (ncores == 1){
+                     delta <- unlist(lapply(seq(1,clunum),function(cluid) {
+                           binid <- spclu[[cluid]]
+                           deltafitfunc(count[binid],m[binid],s[binid])
+                     }))
+                  } else {
+                     delta <- unlist(mclapply(seq(1,clunum),function(cluid) {
+                           binid <- spclu[[cluid]]
+                           deltafitfunc(count[binid],m[binid],s[binid])
+                     }, mc.cores = ncores))
+                  }
+                     
                   crefeature <- m+s*delta[cluster]
             }
             excid <- loaddata$excid
@@ -216,7 +241,7 @@ SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cl
             pmax(0,fullfeature)
       }
       if (is.null(cluster)) {
-            res <- matrix(SCATEsingle(satac,genome=genome,datapath=datapath,ncores=ncores),ncol=1)
+            res <- matrix(SCATEsingle(satac,genome=genome,datapath=datapath),ncol=1)
             colnames(res) <- 'combine'
       } else {
             cluster <- cluster[names(satac)]
@@ -226,7 +251,7 @@ SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cl
                   target <- sort(intersect(clusterid,cluster))
             }
             res <- sapply(target,function(i) {
-                  SCATEsingle(satac[cluster==i],genome=genome,datapath=datapath,ncores=ncores)
+                  SCATEsingle(satac[cluster==i],genome=genome,datapath=datapath)
             })     
             colnames(res) <- target
       }

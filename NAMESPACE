@@ -15,6 +15,7 @@ import(preprocessCore)
 import(splines)
 import(splines2)
 import(xgboost)
-import(utils)
-
-
+importFrom("stats", "approx", "cutree", "dist", "fitted", "hclust",
+             "kmeans", "lm", "loess", "median", "optim", "optimise",
+             "prcomp", "predict", "quantile", "sd")
+importFrom("utils", "write.table")

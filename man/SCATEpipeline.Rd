@@ -10,7 +10,7 @@ SCATEpipeline(
   cellclunum = NULL,
   CREclunum = NULL,
   datapath = NULL,
-  ncores = detectCores(),
+  ncores = 1,
   perplexity = 30
 )
 }
