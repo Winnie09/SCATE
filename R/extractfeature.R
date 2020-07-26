@@ -12,7 +12,7 @@
 #' @import GenomicAlignments parallel splines2 xgboost
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' extractfeature(SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=5000,type='reads',genome="mm10",ncores=1),data.frame(seqnames='chr1',start=1e6,end=1000+1e6))
+#' extractfeature(SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=156,type='reads',genome="mm10",ncores=1),data.frame(seqnames='chr1',start=1e6,end=1000+1e6))
 
 extractfeature <- function(res,region,mode='overlap',folder=NULL) {
       gr <- strsplit(row.names(res),'_')
