@@ -11,7 +11,7 @@
 #' @import GenomicAlignments
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=156,genome='mm10')[1:1000000,,drop=F])
+#' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=156,genome='mm10')[1:1000000,,drop=FALSE])
 
 peakcall <- function(res,flank=1,fdrcut=1e-5) {
    gr <- strsplit(row.names(res),'_')

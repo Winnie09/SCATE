@@ -20,4 +20,3 @@ importFrom("stats", "approx", "cutree", "dist", "fitted", "hclust",
              "prcomp", "predict", "quantile", "sd")
 importFrom("utils", "write.table")
 
-
