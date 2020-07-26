@@ -19,3 +19,5 @@ importFrom("stats", "approx", "cutree", "dist", "fitted", "hclust",
              "kmeans", "lm", "loess", "median", "optim", "optimise",
              "prcomp", "predict", "quantile", "sd")
 importFrom("utils", "write.table")
+
+

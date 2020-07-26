@@ -11,42 +11,42 @@
 #' @import GenomicAlignments
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=156,genome='mm10'))
+#' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=156,genome='mm10')[1:1000000,,drop=F])
 
 peakcall <- function(res,flank=1,fdrcut=1e-5) {
-      gr <- strsplit(row.names(res),'_')
-      gr <- do.call(rbind,gr)
-      gr <- GRanges(seqnames=gr[,1],IRanges(start=as.numeric(gr[,2]),end=as.numeric(gr[,3])))
-      flankgr <- gr
-      start(flankgr) <- start(flankgr) - 200 * flank
-      end(flankgr) <- end(flankgr) + 200 * flank
-      flankgrover <- as.matrix(findOverlaps(gr,flankgr))
+   gr <- strsplit(row.names(res),'_')
+   gr <- do.call(rbind,gr)
+   gr <- GRanges(seqnames=gr[,1],IRanges(start=as.numeric(gr[,2]),end=as.numeric(gr[,3])))
+   flankgr <- gr
+   start(flankgr) <- start(flankgr) - 200 * flank
+   end(flankgr) <- end(flankgr) + 200 * flank
+   flankgrover <- as.matrix(findOverlaps(gr,flankgr))
+   
+   peakres <- lapply(seq(1, ncol(res)),function(i) {
+      feature <- res[,i]
+      sumv <- rowsum(feature[flankgrover[,1]],flankgrover[,2])[,1]
+      sumv <- sumv/rowsum(rep(1,nrow(flankgrover)),flankgrover[,2])[,1]
       
-      peakres <- lapply(seq(1, ncol(res)),function(i) {
-            feature <- res[,i]
-            sumv <- rowsum(feature[flankgrover[,1]],flankgrover[,2])[,1]
-            sumv <- sumv/rowsum(rep(1,nrow(flankgrover)),flankgrover[,2])[,1]
-            
-            sampfeature <- sample(feature)
-            backv <- sapply(seq(0,100000),function(i) mean(sampfeature[(1+i*(2*flank+1)):((i+1)*(2*flank+1))]))
-            xseq <- seq(floor(min(sumv)),ceiling(max(sumv)),0.1)
-            fdr <- sapply(xseq,function(cut) {
-                  mean(backv >= cut)/mean(sumv >= cut)
-            })
-            fdr <- cummin(fdr)
-            fdr <- approx(xseq[!is.na(fdr)],fdr[!is.na(fdr)],sumv,rule=2)$y
-            sig <- which(fdr < fdrcut)
-            centergr <- gr[sig]
-            
-            boundgr <- gr[unique(flankgrover[flankgrover[,2] %in% sig,1])]
-            boundgr <- reduce(boundgr)
-            over <- as.matrix(findOverlaps(centergr,boundgr))
-            fdr <- tapply(fdr[sig][over[,1]],list(over[,2]),min)
-            signal <- tapply(sumv[sig][over[,1]],list(over[,2]),max)
-            dat <- data.frame(chr=as.character(seqnames(boundgr)),start=start(boundgr),end=end(boundgr),FDR=fdr,Signal=signal)
-            dat[order(dat$FDR,-dat$Signal),]
+      sampfeature <- sample(feature)
+      backv <- sapply(seq(0,100000),function(i) mean(sampfeature[(1+i*(2*flank+1)):((i+1)*(2*flank+1))]))
+      xseq <- seq(floor(min(sumv)),ceiling(max(sumv)),0.1)
+      fdr <- sapply(xseq,function(cut) {
+         mean(backv >= cut)/mean(sumv >= cut)
       })
-      names(peakres) <- colnames(res)
-      peakres
+      fdr <- cummin(fdr)
+      fdr <- approx(xseq[!is.na(fdr)],fdr[!is.na(fdr)],sumv,rule=2)$y
+      sig <- which(fdr < fdrcut)
+      centergr <- gr[sig]
+      
+      boundgr <- gr[unique(flankgrover[flankgrover[,2] %in% sig,1])]
+      boundgr <- reduce(boundgr)
+      over <- as.matrix(findOverlaps(centergr,boundgr))
+      fdr <- tapply(fdr[sig][over[,1]],list(over[,2]),min)
+      signal <- tapply(sumv[sig][over[,1]],list(over[,2]),max)
+      dat <- data.frame(chr=as.character(seqnames(boundgr)),start=start(boundgr),end=end(boundgr),FDR=fdr,Signal=signal)
+      dat[order(dat$FDR,-dat$Signal),]
+   })
+   names(peakres) <- colnames(res)
+   peakres
 }
 
