@@ -13,12 +13,14 @@
 #' @param datapath Character variable of the path to the customized database (eg myfolder/database.rds). The database can be made using 'makedatabase' function. If not null, 'genome' is ignored.
 #' @return A list of three components: tsne results, clustering results and aggregated signal for CRE cluster.
 #' @export
-#' @import GenomicAlignments mclust splines Rtsne preprocessCore
+#' @import GenomicAlignments GenomicRanges mclust splines Rtsne preprocessCore
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' set.seed(12345)
-#' celldata <- sapply(1:50,function(i) {pos <- sample(1:1e9,50000); GRanges(seqnames=sample(paste0("chr",1:20),50000,replace=TRUE),IRanges(start=pos,end=pos))})
-#' names(celldata) <- paste0('cell',1:50)
+#' celldata <- lapply(seq_len(50),function(i) {
+#'   pos <- sample(seq_len(1e9),50000)
+#'   GRanges(seqnames=sample(paste0("chr",seq_len(20)),50000,replace=TRUE),IRanges(start=pos,end=pos))
+#' })
+#' names(celldata) <- paste0('cell',seq_len(50))
 #' cellcluster(celldata,type='reads',genome="hg19",filtervar=FALSE,perplexity=1,clunum=3) # reads as input
 
 cellcluster <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',clunum=NULL,perplexity=30,filtervar=TRUE,datapath=NULL) {

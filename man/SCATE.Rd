@@ -48,11 +48,15 @@ Single-cell ATAC-seq signal Extration and Enhancement
 This function takes as input the scATAC-seq reads and generates enhanced signals. Users can either perform SCATE on clusters of cells or a single group of cells.
 }
 \examples{
-set.seed(12345)
-SCATE(GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8)),clunum=156,type='reads',genome="mm10") # Reads as input, setting CRE cluster number as 156 to increase speed. Users need to set it to be NULL in real applications.
+#Reads as input, setting CRE cluster number as 156 to increase speed. Users need to set it to be NULL in real applications.
+gr <- GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e8))
+SCATE(gr,clunum=156,type='reads',genome="mm10") 
 \dontrun{
-SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1),clunum=156,type='peaks',genome="mm10") # Peak as input, peakOverlapMethod=full
-SCATE(satac=data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e6,count=1),clunum=156,type='peaks',peakOverlapMethod='middle',genome="mm10") # Peak as input, peakOverlapMethod=middle
+peak <- data.frame(seqnames="chr1",start=seq_len(100)+1e6,end=seq_len(100)+1e8,count=1)
+#Peak as input, peakOverlapMethod=full
+SCATE(satac=peak,clunum=156,type='peaks',genome="mm10") 
+#Peak as input, peakOverlapMethod=middle
+SCATE(satac=peak,clunum=156,type='peaks',peakOverlapMethod='middle',genome="mm10") 
 }
 }
 \author{

@@ -5,16 +5,17 @@
 #' This function makes a new customized database if users have new bulk DNase-seq data and such information can be contribued to the model building of SCATE.
 #' @param datapath path to the data package folder (e.g. myfolder/hg19/). User must first download the data package to use this function. The data package for hg19 and mm10 can be downloaded from http://jilab.biostat.jhsph.edu/projects/scate/hg19.zip or http://jilab.biostat.jhsph.edu/projects/scate/mm10.zip. The compressed file should be unzipped. If users do not want to use existing data compendium (e.g. to build a database in a new species), datapath should be set NULL, and 'genome' will be ignored.
 #' @param savepath path to save the generated database. e.g. myfolder/database.rds.
+#' @param blacklist GRanges object that identifies blacklisted regions to be filtered out.
 #' @param bamfile location of bulk DNase-seq bamfiles.
 #' @param cre dataframe of new CRE sites to be added to the database. First column: chromosome name. Second column: start position. Third column: end position.
 #' @param genome Character variable of either "hg19" or "mm10". Default is 'hg19'. Ignored when datapath is NULL.
 #' @param genomerange Data frame with two columns. First column is the chromosome and second column is the length of the genome. Only useful when datapath is NULL. Example is https://genome.ucsc.edu/goldenpath/help/hg19.chrom.sizes
 #' @return a new customized database if users have new bulk DNase-seq data and such information can be contribued to the model building of SCATE.
 #' @export
-#' @import GenomicAlignments
+#' @import GenomicAlignments GenomicRanges
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 
-makedatabase <- function(datapath,savepath,bamfile=NULL,cre=NULL,genome='hg19',genomerange=NULL) {
+makedatabase <- function(datapath,savepath,blacklist=NULL,bamfile=NULL,cre=NULL,genome='hg19',genomerange=NULL) {
    if (is.null(datapath)) {
             chrlen <- genomerange
             allres <- NULL

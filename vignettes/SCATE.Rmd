@@ -108,7 +108,7 @@ ggplot(plotdata,aes(x=tSNE1,y=tSNE2,col=Cluster)) + geom_point()
 # Run SCATE
 
 The function `SCATE` will reconstruct signals for individual CREs. For example, below code performs SCATE using the scATAC-seq data and clustering results from the previous clustering step. For demonstration purpose, here number of CRE clusters is set to be 156 (clunum=156) to allow faster speed. In real application, clunum is recommended to set to NULL so SCATE will automatically choose the optimal number of clusters.
-```{r eval=FALSE}      
+```{r}      
 res <- SCATE(satac,genome="hg19",cluster=cluster,clusterid=NULL,clunum=156,ncores=1,verbose=TRUE)
 # check the 10000-10005th row of the matrix
 res[seq(10000,10005),]
@@ -119,19 +119,19 @@ If users only want to perform SCATE in a subset of clusters, they can set `clust
 The output is matrix of reconstructed signals. The number of rows of the matrix is the same as the number of bins in the genome. The number of columns is the same as the number of clusters in which SCATE is performed. The column names indicate the cluster id.
 
 Users can also supply their own cell cluster. An example can be seen below. `usercellcluster` specifies the cluster by users. Note that `usercellcluster` needs to be named to correspond with the list of GRanges.
-```{r eval=FALSE}
+```{r}
 # use similar ways to construct the cluster
 usercellcluster <- rep(1:2,each=9)
 names(usercellcluster) <- names(satac)
 # check the contents of the cluster
 usercellcluster
 ```
-```{r eval=FALSE}    
+```{r}    
 userclusterres <- SCATE(satac,genome="hg19",cluster=usercellcluster,clunum=156,ncores=1,verbose=TRUE)
 ```
 
 Function `extractfeature` can be used to extract signals for a subset of genomic region of interest. For example if we want to extract signal for all bins that are within chromosome 5 50000-50300 and 50700-51000, we can first prepare the following region data:
-```{r eval=FALSE}
+```{r}
 region <- data.frame(chr=c('chr5','chr5'),start=c(50000,50700),end=c(50300,51000))
 region
 ```
@@ -139,13 +139,13 @@ region
 Region is a data frame with three columns. First column is chromosome name, second column is starting position, and third column is the ending position.
 
 Function `extractfeature` is then called in this way. `mode` can be either 'overlap' to include all bins that overlap with the given `region`, or be 'nearest' to include the nearest bin for each region.
-```{r eval=FALSE}
+```{r}
 extractres <- extractfeature(res,region,mode='overlap')
 extractres
 ```
 
 `extractfeature` also allows the extracted features to be saved to BED files that can be uploaded to genome browser (e.g. UCSC genome browser):
-```{r eval=FALSE}
+```{r}
 extractres <- extractfeature(res,region,mode='overlap',folder='destination folder')
 ```
 
@@ -155,7 +155,7 @@ In this example, a set of BED files will be saved to destination folder. Each BE
 
 The function `peakcall` will perform peak calling on the SCATE results. For example, we can call peaks for the first cluster:
 
-```{r eval=FALSE}      
+```{r}      
 peakres <- peakcall(res)
 # check the result for the first cluster
 head(peakres[[1]])
@@ -164,14 +164,14 @@ head(peakres[[1]])
 For each cluster, the output is a data frame with five column. The first three columns tell the location of the peak. They are chromosome name, starting location and ending location respectively. The fourth column is the FDR of the peak, and the fifth column is the signal of the peak. Peaks are already ordered by FDR and then by signal.
 
 Use the following code to save the peak results for the first cluster as BED file.
-```{r eval=FALSE}
+```{r}
 write.table(peakres[[1]],file='your file.bed',sep='\t',quote=F,col.names = FALSE,row.names = FALSE)
 ```
 
 # Wrapper function
 
 The whole process of reading in bam, clustering cell, and performing SCATE is included in the `SCATEpipeline` function using following wrapper function of SCATE pipeline:
-```{r eval=FALSE}    
+```{r}    
 piperes <- SCATEpipeline(bamlist,genome="hg19",cellclunum=2,CREclunum=156,perplexity=5,ncores=1)
 # get the cell cluster results, same as calling 'cellcluster' function.
 cluster <- piperes[['cellcluster']]
@@ -185,7 +185,7 @@ As before, `bamlist` stores the locations to bam files and `genome` is 'hg19' or
 
 One can extract the region using the `extractfeature`.
 
-```{r eval=FALSE}
+```{r}
 extractres <- extractfeature(piperes[['SCATE']],region,mode='overlap',folder='destination folder')
 ```
 

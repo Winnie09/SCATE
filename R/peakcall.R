@@ -8,10 +8,12 @@
 #' @param fdrcut Numeric variable of FDR cutoff. Bins passing the FDR cutoff will be peaks.
 #' @return A list with length equal to the number of clusters. Each element is a data frame with five columns: chromosome name, starting location, ending location, FDR and signal. The data frame is ordered by FDR then by signal.
 #' @export
-#' @import GenomicAlignments
+#' @import GenomicAlignments GenomicRanges
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' peakcall(SCATE(GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),clunum=156,genome='mm10')[1:1000000,,drop=FALSE])
+#' gr <- GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e6))
+#' scateout <- SCATE(gr,clunum=156,genome='mm10')[seq_len(1000000),,drop=FALSE]
+#' peakcall(scateout)
 
 peakcall <- function(res,flank=1,fdrcut=1e-5) {
    gr <- strsplit(row.names(res),'_')

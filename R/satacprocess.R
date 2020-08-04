@@ -8,14 +8,17 @@
 #' @param libsizefilter Numeric variable giving the minimum library size. scATAC-seq samples with library size smaller than this cutoff will be discarded.
 #' @return GRanges object of list of GRanges object after preprocessing.
 #' @export
-#' @import GenomicAlignments
+#' @import GenomicAlignments GenomicRanges
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' satacprocess(list(cell1=GRanges(seqnames="chr1",IRanges(start=1:100+1e6,end=1:100+1e6)),cell2=GRanges(seqnames="chr2",IRanges(start=1:100+1e6,end=1:100+1e6))),type='gr',libsizefilter=10)
+#' c1 <- GRanges(seqnames="chr1",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e6))
+#' c2 <- GRanges(seqnames="chr2",IRanges(start=seq_len(100)+1e6,end=seq_len(100)+1e6))
+#' grl <- list(cell1=c1,cell2=c2)
+#' satacprocess(grl,type='gr',libsizefilter=10)
 
 satacprocess <- function(input,type='bam',libsizefilter=1000) {
       if (type=='bam') {
-            satac <- sapply(sapply(input,readGAlignmentPairs),GRanges)
+            satac <- sapply(sapply(input,readGAlignmentPairs,simplify=FALSE),GRanges,simplify=FALSE)
       } else {
             satac <- input
       }

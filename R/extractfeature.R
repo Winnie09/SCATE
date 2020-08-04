@@ -7,12 +7,12 @@
 #' @param region Dataframe of genomic region. First column: chromosome name. Second column: start position. Third column: end position.
 #' @param mode Either 'overlap' or 'nearest'. If overlap, only bins that overlap with the regions of interest will be shown. If nearest, the nearest bin to each region will be shown. Order will be the same as the input genomic region.
 #' @param folder A character value specifying the location where the BED files will be stored. If not NULL, the signal and location of each bin will be saved as BED files in 'folder'. Each cluster has its own BED file, and the name of the BED file is the same as the cluster name. These BED files can be uploaded to UCSC genome browser for visualization.
-#' @return A subset of the input matrix
+#' @return If foler is NULL, a subset of the input matrix. Otherwise nothing will be returned and the results will be saved to local folder.
 #' @export
-#' @import GenomicAlignments parallel splines2 xgboost
+#' @import GenomicAlignments GenomicRanges parallel splines2 xgboost
 #' @author Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji* <whou10@@jhu.edu>
 #' @examples
-#' scateres <- data.frame(combine=1:6)
+#' scateres <- data.frame(combine=seq_len(6))
 #' rownames(scateres) <- paste0('chr1_',c(0:5)*200,'_',199+c(0:5)*200)
 #' extractfeature(scateres,data.frame(seqnames='chr1',start=0,end=201))
 
@@ -37,6 +37,6 @@ extractfeature <- function(res,region,mode='overlap',folder=NULL) {
                   d <- data.frame(chr=as.character(seqnames(gr[id])),start=start(gr)[id],end=end(gr)[id],n='bin',score=res[,cl])
                   write.table(d,file=paste0(folder,'/',cl,'.bed'),sep='\t',quote=FALSE,col.names = FALSE,row.names = FALSE)
             }
-            
+            NULL
       }
 }

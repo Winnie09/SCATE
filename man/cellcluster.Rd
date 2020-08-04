@@ -42,9 +42,11 @@ Perform Cell Clustering
 This function generates averaged signals for CRE clusters and cluster cells.
 }
 \examples{
-set.seed(12345)
-celldata <- sapply(1:50,function(i) {pos <- sample(1:1e9,50000); GRanges(seqnames=sample(paste0("chr",1:20),50000,replace=TRUE),IRanges(start=pos,end=pos))})
-names(celldata) <- paste0('cell',1:50)
+celldata <- lapply(seq_len(50),function(i) {
+  pos <- sample(seq_len(1e9),50000)
+  GRanges(seqnames=sample(paste0("chr",seq_len(20)),50000,replace=TRUE),IRanges(start=pos,end=pos))
+})
+names(celldata) <- paste0('cell',seq_len(50))
 cellcluster(celldata,type='reads',genome="hg19",filtervar=FALSE,perplexity=1,clunum=3) # reads as input
 }
 \author{
