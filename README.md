@@ -54,11 +54,15 @@ Check below link for the R code of the user manual.
 
 https://github.com/zji90/SCATE/blob/master/inst/doc/SCATE.R
 
-## Contact the Author
-Author: Zhicheng Ji, Hongkai Ji
+## Citation 
+
+Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji, [*Single-cell ATAC-seq Signal Extraction and Enhancement with SCATE*](https://doi.org/10.1186/s13059-020-02075-3), Genome Biol 21, 161 (2020).
+
+## Contact
+Author: Zhicheng Ji, Weiqiang Zhou, Wenpin Hou, Hongkai Ji 
 
 Report bugs and provide suggestions by sending email to:
 
-Maintainer: Zhicheng Ji (zji4@jhu.edu)
+Maintainer: Zhicheng Ji (zji4@jhu.edu), Wenpin Hou (whou10@jhu.edu)
 
 Or open a new issue on this Github page

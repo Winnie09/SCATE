@@ -29,7 +29,7 @@
 #' SCATE(satac=peak,clunum=156,type='peaks',peakOverlapMethod='middle',genome="mm10") 
 #' }
 
-SCATE <- function(satac,type=c('reads', 'peaks'),peakOverlapMethod = 'full',genome='hg19',cluster=NULL,clusterid=NULL,clunum=NULL,datapath=NULL,verbose=TRUE,ncores = 1) {
+SCATE <- function(satac,type='reads',peakOverlapMethod = 'full',genome='hg19',cluster=NULL,clusterid=NULL,clunum=NULL,datapath=NULL,verbose=TRUE,ncores = 1) {
       if (Sys.info()[['sysname']]=='Windows') {
             message('Parallel is disabled for Windows. Running with one core')
             ncores <- 1
