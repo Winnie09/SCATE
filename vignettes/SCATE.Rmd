@@ -165,7 +165,7 @@ For each cluster, the output is a data frame with five column. The first three c
 
 Use the following code to save the peak results for the first cluster as BED file.
 ```{r}
-write.table(peakres[[1]],file='your file.bed',sep='\t',quote=F,col.names = FALSE,row.names = FALSE)
+write.table(peakres[[1]],file='your file.bed',sep='\t',quote=FALSE,col.names = FALSE,row.names = FALSE)
 ```
 
 # Wrapper function
