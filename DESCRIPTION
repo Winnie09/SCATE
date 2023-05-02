@@ -7,20 +7,17 @@ License: MIT + file LICENSE
 BugReports: https://github.com/Winnie09/SCATE/issues
 VignetteBuilder: knitr
 Encoding: UTF-8
-biocViews: ExperimentHub, 
-	   ExperimentData,
-	   Genome, 
-	   SequencingData, 
-	   SingleCellData, 
-	   SNPData
+biocViews: ExperimentHub, ExperimentData, Genome, SequencingData,
+        SingleCellData, SNPData
 Depends: parallel, preprocessCore, splines, splines2, xgboost,
-         SCATEData, Rtsne, mclust 
-Imports: utils,
-         stats,
-	 GenomicAlignments,
-         GenomicRanges
-Suggests: rmarkdown,
-	  ggplot2,
-	  knitr
+        SCATEData, Rtsne, mclust
+Imports: utils, stats, GenomicAlignments, GenomicRanges
+Suggests: rmarkdown, ggplot2, knitr, BiocStyle
 RoxygenNote: 7.1.1
 NeedsCompilation: no
+Packaged: 2020-10-06 08:32:08 UTC; wenpinhou
+Author: Zhicheng Ji [aut],
+  Weiqiang Zhou [aut],
+  Wenpin Hou [cre, aut] (<https://orcid.org/0000-0003-0972-2192>),
+  Hongkai Ji [aut]
+Maintainer: Wenpin Hou <wp.hou3@gmail.com>
